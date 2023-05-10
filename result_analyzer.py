@@ -1,6 +1,6 @@
 from util import Util
 from plots import Plotter
-from config_data import Config
+from config import Config
 # from config_setting import CONFIG_SETTING
 import pandas as pd
 

@@ -1,12 +1,12 @@
-import transformer
+# import transformer
 # import optuna
 # from sklearn.model_selection import train_test_split
 import pandas as pd
 from pathlib import Path
 from plots import Plotter
 from util import Util
-from config_data import Config
-from config_setting import CONFIG_SETTING
+from config import Config
+# from config_setting import CONFIG_SETTING
 from result_analyzer import ResultAnalyzer
 
 TRANSFORMER_SETTING = {'epoc': 1, 'optimizer_choice': 'adamax', 'num_heads': 8, 'head_size': 256, 'ff_dim': 6,
@@ -141,6 +141,9 @@ def train(util: Util, config):
 
 # Call the main function
 if __name__ == "__main__":
+    first_config = Config()
+    print(first_config.file_name_format)
+    print(shit)
     main_config = Config(**CONFIG_SETTING)
     model_high_name = "daily Window size [10] Forecast [3] Source [HIGH] z_normalize.h5"
     model_low_name = "daily Window size [10] Forecast [3] Source [LOW] z_normalize.h5"
