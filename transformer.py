@@ -2,17 +2,17 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import precision_score, recall_score
+# from sklearn.model_selection import train_test_split
+# from sklearn.metrics import precision_score, recall_score
 from tqdm import tqdm
 from tensorflow import keras
 from tensorflow.keras import layers
 import tensorflow.keras.optimizers
 from pathlib import Path
 
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 import random
-import parameters as param
+# import parameters as param
 
 
 # model processes a tensor of shape (batch size, sequence length, features), where sequence length is the number of time steps and features is each input timeseries.
@@ -110,7 +110,6 @@ def construct_transformer(X_train, y_train, window_size, forecast_size, source, 
     if print_summary:
         model.summary()
 
-    # model_name = models_folder/'/best_model chunk ['+str(param.chunk_size)+"] SMA ["+str(param.ma_len)+"] forecast ["+str(param.forecast_size)+"].h5"
     file_name = str(data_folder).split("/")[-1] + " Window size [" + str(window_size) + "] Forecast [" + \
                 str(forecast_size) + "] Source [" + source + "] " + normalizer + ".h5"
     model_name = model_folder / file_name

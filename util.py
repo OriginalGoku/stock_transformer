@@ -4,6 +4,7 @@ import numpy as np
 from typing import List, Tuple
 import keras
 from pathlib import Path
+from config import Config
 
 
 # import random
@@ -16,32 +17,32 @@ def merge_data_dicts(data_dicts: List[dict]) -> dict:
             merged_data_dict[key].extend(data_dict[key])
     return merged_data_dict
 
-
 class Util:
-    def __init__(self, normalizer: str, file_list: List[str], window_size: int, train_cut_off_date: pd.DatetimeTZDtype,
-                 include_std: bool, source: str, file_name_format: str,
-                 open_col_name: str, high_col_name: str, low_col_name: str, close_col_name: str, result_folder: Path,
-                 data_folder: Path, usable_data_col: list, ma_len: int, use_mean_y: bool,
-                 forecast_size: int, use_quantile_filter: bool, quantile_filter: float):
-        self.normalizer = normalizer
-        self.file_list = file_list
-        self.window_size = window_size
-        self.train_cut_off_date = train_cut_off_date
-        self.include_std = include_std
-        self.source = source
-        self.open_col_name = open_col_name
-        self.high_col_name = high_col_name
-        self.low_col_name = low_col_name
-        self.close_col_name = close_col_name
-        self.data_folder = data_folder
-        self.usable_data_col = usable_data_col
-        self.ma_len = ma_len
-        self.use_mean_y = use_mean_y
-        self.forecast_size = forecast_size
-        self.use_quantile_filter = use_quantile_filter
-        self.quantile_filter = quantile_filter
-        self.file_name_format = file_name_format
-        self.result_folder = result_folder
+    # def __init__(self, normalizer: str, file_list: List[str], window_size: int, train_cut_off_date: pd.DatetimeTZDtype,
+    #              include_std: bool, source: str, file_name_format: str,
+    #              open_col_name: str, high_col_name: str, low_col_name: str, close_col_name: str, result_folder: Path,
+    #              data_folder: Path, usable_data_col: list, ma_len: int, use_mean_y: bool,
+    #              forecast_size: int, use_quantile_filter: bool, quantile_filter: float):
+    def __init__(self, config: Config):
+        self.normalizer = config.normalizer
+        self.file_list = config.file_list
+        self.window_size = config.window_size
+        self.train_cut_off_date = config.training_cut_off_date
+        self.include_std = config.include_std
+        self.source = config.source
+        self.open_col_name = config.open_col_name
+        self.high_col_name = config.high_col_name
+        self.low_col_name = config.low_col_name
+        self.close_col_name = config.close_col_name
+        self.data_folder = config.data_folder
+        self.usable_data_col = config.usable_data_col
+        self.ma_len = config.ma_len
+        self.use_mean_y = config.use_mean_y
+        self.forecast_size = config.forecast_size
+        self.use_quantile_filter = config.use_quantile_filter
+        self.quantile_filter = config.quantile_filter
+        self.file_name_format = config.file_name_format
+        self.result_folder = config.result_folder
 
     # def convert_to_original(self, normalized_window, mean_data, std_data, z_normalize, x_0=None):
     #     if z_normalize:  # z_normalize = True
@@ -114,6 +115,8 @@ class Util:
         return tuple(np.array(values) for values in merged_train_data_dict.values()), \
             tuple(np.array(values) for values in merged_test_data_dict.values())
 
+
+
     def gen_sliding_window_including_open(self, data: pd.DataFrame) -> dict:
         # Description
         # This function generates a dictionary containing sliding windows of data from the input DataFrame for features
@@ -123,7 +126,7 @@ class Util:
         # element is the open of on the day of prediction of y.
         # the structure looks like this:
         # [np.log(std), stock['CLOSE'].iloc[:chunk_size], stock['OPEN'].iloc[chunk_size-1]]
-        print(f"Generating Sliding Window (window_size = {self.window_size}, normalizer = {self.normalizer})"
+        print(f"Generating Sliding Window on {self.source} - (window_size = {self.window_size}, normalizer = {self.normalizer})"
               f" len(data[{self.source}]) = {len(data)}")
         # Create a list containing column names for extraction
 

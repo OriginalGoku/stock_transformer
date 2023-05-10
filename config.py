@@ -8,7 +8,7 @@ from pathlib import Path
 
 @dataclass
 class Config:
-    normalizer: str = True
+    normalizer: str = 'z_normalize'
     use_quantile_filter: bool = False
     include_std: bool = True
     use_mean_y: bool = True
@@ -34,5 +34,17 @@ class Config:
     # Trade Analyzer:
     threshold: float = 0.01
 
-    file_name_format = f"Window {window_size} - Forecast {forecast_size} - MA {ma_len} - " \
-                       f"Source {source} - {normalizer}"
+    transformer_setting = {'epoc': 1, 'optimizer_choice': 'adamax', 'num_heads': 8, 'head_size': 256, 'ff_dim': 6,
+                           'num_transformer_blocks': 6, 'mlp_units': 512, 'dropout': 0.5, 'mlp_dropout': 0.6,
+                           'learning_rate': 0.00134, 'validation_split': 0.2, 'batch_size': 32}
+    @property
+    def file_name_format(self):
+        return f"Window {self.window_size} - Forecast {self.forecast_size} - " \
+               f"MA {self.ma_len} - Source {self.source} - {self.normalizer}"
+
+    # Check if the folders exist, if not, create them after instantiating the class
+    def __post_init__(self):
+        for folder in [self.data_folder, self.result_folder, self.models_folder]:
+            if not folder.exists():
+                folder.mkdir(parents=True, exist_ok=True)
+

@@ -9,23 +9,24 @@ import mplfinance as mpf
 
 class Plotter:
     def __init__(self, y_test, y_pred, result_folder: Path, history: keras.callbacks.History, file_name_format: str,
-                 save_results=True):
+                 save_results=True, display_plots=True):
         self.result_folder = result_folder
         self.save_results = save_results
         self.plot_file_details = file_name_format
         self.history = history
         self.y_test = y_test
         self.y_pred = y_pred
+        self.display_plots = display_plots
 
     @staticmethod
-    def plot_hist_y_distribution(y_train, y_test, result_folder, bins=100):
+    def plot_hist_distribution(y_train, y_test, first_input_title, second_input_title, result_folder, bins=100):
         # Plot the histogram for the train and test set y values
 
         hist_train, bins_train = np.histogram(y_train, bins=bins)
         hist_test, bins_test = np.histogram(y_test, bins=bins)
 
-        plt.bar(bins_train[:-1], hist_train, width=(bins_train[1] - bins_train[0]), label="Train Distribution")
-        plt.bar(bins_test[:-1], hist_test, width=(bins_test[1] - bins_test[0]), label="Test Distribution")
+        plt.bar(bins_train[:-1], hist_train, width=(bins_train[1] - bins_train[0]), label=first_input_title)
+        plt.bar(bins_test[:-1], hist_test, width=(bins_test[1] - bins_test[0]), label=second_input_title)
         plt.legend()
         file_name = "Train and Test y Distribution.png"
         plt.savefig(result_folder / file_name)
@@ -80,6 +81,9 @@ class Plotter:
         if self.save_results:
             plt.savefig(self.result_folder / file_name)
         plt.show()
+        # if self.display_plots:
+        # else:
+        #     plt.close()
 
     def plot_histogram_y_test_minus_y_pred(self, bins=30):
         # Calculate the differences between true and predicted values
@@ -97,6 +101,9 @@ class Plotter:
         if self.save_results:
             plt.savefig(self.result_folder / file_name)
         plt.show()
+        # if self.display_plots:
+        # else:
+        #     plt.close()
 
     def plot_scatter_true_vs_predicted_diagonal(self):
         # Plot the true values vs the predicted values
@@ -112,6 +119,9 @@ class Plotter:
             plt.savefig(
                 Path(self.result_folder / file_name))
         plt.show()
+        # if self.display_plots:
+        # else:
+        #     plt.close()
 
     # def plot_scatter_true_vs_predicted_diagonal_only_different_sign(y_test, y_pred, save_results=True):
     #     # Plot the true values vs the predicted values

@@ -7,22 +7,10 @@ import pandas as pd
 
 class ResultAnalyzer:
     def __init__(self, high_data, low_data, start_location_for_plotting, end_location_for_plotting, config: Config,
-                 stock_file_name, file_name_format):
+                 stock_file_name):
         print("Starting Result Analyzer")
-        # config = Config(**CONFIG_SETTING)
-        # file_name_format = f"Window {config.window_size} - Forecast {config.forecast_size} - MA {config.ma_len} - " \
-        #                    f"Source {config.source} - {config.normalizer}"
-        # stock_file_name = 'BATS_M.csv'
-        # high_results_file_name = 'Results Window 10 - Forecast 3 - MA 5 - Source HIGH - z_normalize.csv'
-        # low_results_file_name = 'Results Window 10 - Forecast 3 - MA 5 - Source LOW - z_normalize.csv'
-        # high_data, low_data = util.load_high_low_results(high_results_file_name, low_results_file_name,
-        #                                                  config.result_folder)
 
-        util = Util(config.normalizer, config.file_list, config.window_size, config.training_cut_off_date,
-                    config.include_std, config.source, file_name_format, config.open_col_name, config.high_col_name,
-                    config.low_col_name, config.close_col_name, config.result_folder, config.data_folder,
-                    config.usable_data_col, config.ma_len, config.use_mean_y, config.forecast_size,
-                    config.use_quantile_filter, config.quantile_filter)
+        util = Util(config)
 
         # start_location_for_plotting = 100
         # end_location_for_plotting = 200
@@ -55,6 +43,6 @@ class ResultAnalyzer:
 
         Plotter.plot_explosive_moves(predict_df, config.result_folder)
 
-        predict_df.to_csv(f"{config.result_folder}/Predictions {file_name_format}.csv")
+        predict_df.to_csv(f"{config.result_folder}/Predictions {config.file_name_format}.csv")
         print(f"result_dic: {result_dic}")
-        pd.DataFrame(result_dic, index=[0]).to_csv(f"{config.result_folder}/Results {file_name_format}.csv")
+        pd.DataFrame(result_dic, index=[0]).to_csv(f"{config.result_folder}/Results {config.file_name_format}.csv")
