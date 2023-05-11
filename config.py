@@ -8,6 +8,7 @@ from pathlib import Path
 
 @dataclass
 class Config:
+    file_list: List[str] #= field(default_factory=lambda: ['BATS_SPY.csv'])
     normalizer: str = 'z_normalize'
     use_quantile_filter: bool = False
     include_std: bool = True
@@ -29,7 +30,6 @@ class Config:
     models_folder: Path = Path('models')
 
     training_cut_off_date: DatetimeTZDtype = pd.to_datetime('2018-01-03 09:30:00-05:00')
-    file_list: List[str] = field(default_factory=lambda: ['BATS_SPY.csv'])
 
     # Trade Analyzer:
     threshold: float = 0.01

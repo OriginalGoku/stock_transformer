@@ -14,18 +14,19 @@ def generate_data(util: Util, config: Config):
     train_data, test_data = util.gen_multiple_sliding_window()
 
     X_train, y_train, mean_x_train, std_x_train, mean_y_train, std_y_train, high_train, low_train, close_train, \
-    date_train, symbol_train = train_data
+        date_train, symbol_train = train_data
 
     X_test, y_test, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, low_test, close_test, date_test, \
-    symbol_test = test_data
+        symbol_test = test_data
 
-    X_train, X_test, y_train, y_test = util.shuffle_reshape(X_train, X_test, y_train, y_test)
+    # X_train, X_test, y_train, y_test = util.shuffle_reshape(X_train, X_test, y_train, y_test)
+    X_train, X_test, y_train= util.shuffle_reshape(X_train, X_test, y_train)
 
     Plotter.plot_hist_distribution(y_train, y_test, "y_train", 'y_test', config.result_folder)
 
     return X_train, X_test, y_train, y_test, mean_x_train, std_x_train, mean_y_train, std_y_train, high_train, \
-           low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, \
-           high_test, low_test, close_test, date_test, symbol_test
+        low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, \
+        high_test, low_test, close_test, date_test, symbol_test
 
 
 def test_model(model_high_name, model_low_name, util, config: Config, start_location_for_plotting,
@@ -38,8 +39,8 @@ def test_model(model_high_name, model_low_name, util, config: Config, start_loca
     config.source = 'HIGH'
 
     X_train, X_test, y_train, y_test, mean_x_train, std_x_train, mean_y_train, std_y_train, high_train, \
-    low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
-    low_test, close_test, date_test, symbol_test = generate_data(util, config)
+        low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
+        low_test, close_test, date_test, symbol_test = generate_data(util, config)
 
     print("Generating results from high model...")
 
@@ -61,8 +62,8 @@ def test_model(model_high_name, model_low_name, util, config: Config, start_loca
     config.source = 'LOW'
 
     X_train, X_test, y_train, y_test, mean_x_train, std_x_train, mean_y_train, std_y_train, high_train, \
-    low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
-    low_test, close_test, date_test, symbol_test = generate_data(util, config)
+        low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
+        low_test, close_test, date_test, symbol_test = generate_data(util, config)
 
     y_pred_normal = model_low.predict(X_test)
     y_pred = util.convert_to_original(y_pred_normal, mean_y_test, std_y_test)
@@ -90,12 +91,13 @@ def train_model(X_train, y_train, config):
     return model
 
 
-def train(util: Util, config):
+def train(util: Util, config, model=None):
     X_train, X_test, y_train, y_test, mean_x_train, std_x_train, mean_y_train, std_y_train, high_train, \
-    low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
-    low_test, close_test, date_test, symbol_test = generate_data(util, config)
+        low_train, close_train, date_train, symbol_train, mean_x_test, std_x_test, mean_y_test, std_y_test, high_test, \
+        low_test, close_test, date_test, symbol_test = generate_data(util, config)
 
-    model = train_model(X_train, y_train, config)
+    if model is None:
+        model = train_model(X_train, y_train, config)
 
     y_pred_normal = model.predict(X_test)
     print(f"converting y_pred_normal to original")
@@ -131,28 +133,52 @@ def train(util: Util, config):
 
     file_name = config.file_name_format + "Raw Results.csv"
     temp_res.to_csv(config.result_folder / file_name, index=False)
-    results = util.analyze_results(y_test, y_pred, X_test, date_test, high_test, low_test, close_test)
-    plotter.plot_cum_log_return(results)
+    temp_results = util.analyze_results(y_test, y_pred, X_test, date_test, high_test, low_test, close_test)
+    plotter.plot_cum_log_return(temp_results)
+    return temp_results, model
 
 
-def run_model(congi_file: Config):
-    utility = Util(congi_file)
-    train(utility, congi_file)
+def run_model(config_file: Config, model_name=None):
+    utility = Util(config_file)
+    return train(utility, config_file, model_name)
 
 
 # Call the main function
 if __name__ == "__main__":
-    train_config = Config()
+    # train_file_list = ["FX_EURUSD.csv"]
+    # train_file_list = ["BATS_SPY.csv"]
+    train_file_list = ["BATS_M.csv"]
+    train_config = Config(file_list=train_file_list)
     # print(first_config.file_name_format)
 
     # stock_file_name = "BATS_SPY.csv"
-    train_config.file_list = ["BATS_TSLA.csv"]
-    training_cut_off_date = pd.to_datetime('2022-01-03 09:30:00-05:00')
+    training_cut_off_date = pd.to_datetime('2018-01-03 09:30:00-05:00')
     train_config.training_cut_off_date = training_cut_off_date
-    source_list = ['LOW', 'HIGH']
+    source_list = ['HIGH', 'LOW']
+    results = []
+    models = []
     for source in source_list:
         train_config.source = source
-        run_model(train_config)
+        res, model = run_model(train_config)
+        models.append(model)
+
+    # test_file_list = ["FX_EURUSD.csv"]
+    # test_file_list = ["BATS_SPY.csv"]
+    test_file_list = ["BATS_TSLA.csv"]
+    test_config = Config(file_list=test_file_list)
+    test_config.threshold = 0.04
+
+    test_cut_off_date = pd.to_datetime('2018-01-02 09:30:00-05:00')
+    test_config.test_cut_off_date = test_cut_off_date
+    for idx, source in enumerate(source_list):
+        test_config.source = source
+        res, model = run_model(test_config, models[idx])
+        results.append(res)
+    start_location_for_plotting = 0
+    end_location_for_plotting = 10
+
+    result_analyzer = ResultAnalyzer(results[0], results[1], start_location_for_plotting, end_location_for_plotting,
+                                     test_config)
 
     # Todo: Check why number of long trades are so little
 

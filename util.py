@@ -17,12 +17,8 @@ def merge_data_dicts(data_dicts: List[dict]) -> dict:
             merged_data_dict[key].extend(data_dict[key])
     return merged_data_dict
 
+
 class Util:
-    # def __init__(self, normalizer: str, file_list: List[str], window_size: int, train_cut_off_date: pd.DatetimeTZDtype,
-    #              include_std: bool, source: str, file_name_format: str,
-    #              open_col_name: str, high_col_name: str, low_col_name: str, close_col_name: str, result_folder: Path,
-    #              data_folder: Path, usable_data_col: list, ma_len: int, use_mean_y: bool,
-    #              forecast_size: int, use_quantile_filter: bool, quantile_filter: float):
     def __init__(self, config: Config):
         self.normalizer = config.normalizer
         self.file_list = config.file_list
@@ -57,7 +53,7 @@ class Util:
     #
     #     return np.array(original_window)
     @staticmethod
-    def shuffle_reshape(X_train, X_test, y_train, y_test):
+    def shuffle_reshape(X_train, X_test, y_train):#, y_test):
         idx = np.random.permutation(len(X_train))
         X_train = X_train[idx]
         y_train = y_train[idx]
@@ -70,8 +66,8 @@ class Util:
         print(f"X_train shape: {X_train.shape}")
         print(f"X_test shape: {X_test.shape}")
         print(f"y_train shape: {y_train.shape}")
-        print(f"y_test shape: {y_test.shape}")
-        return X_train, X_test, y_train, y_test
+        # print(f"y_test shape: {y_test.shape}")
+        return X_train, X_test, y_train #, y_test
 
     def convert_to_original(self, normalized_window, mean_data=None, std_data=None):
 
@@ -115,8 +111,6 @@ class Util:
         return tuple(np.array(values) for values in merged_train_data_dict.values()), \
             tuple(np.array(values) for values in merged_test_data_dict.values())
 
-
-
     def gen_sliding_window_including_open(self, data: pd.DataFrame) -> dict:
         # Description
         # This function generates a dictionary containing sliding windows of data from the input DataFrame for features
@@ -126,8 +120,9 @@ class Util:
         # element is the open of on the day of prediction of y.
         # the structure looks like this:
         # [np.log(std), stock['CLOSE'].iloc[:chunk_size], stock['OPEN'].iloc[chunk_size-1]]
-        print(f"Generating Sliding Window on {self.source} - (window_size = {self.window_size}, normalizer = {self.normalizer})"
-              f" len(data[{self.source}]) = {len(data)}")
+        print(
+            f"Generating Sliding Window on {self.source} - (window_size = {self.window_size}, normalizer = {self.normalizer})"
+            f" len(data[{self.source}]) = {len(data)}")
         # Create a list containing column names for extraction
 
         columns = [self.source, self.open_col_name, self.high_col_name, self.low_col_name]
@@ -442,10 +437,14 @@ class Util:
             'total_return_explosive_long': round(total_return_explosive_long, rounding_precision),
             'explosive_short_no_trades': len(prediction_high_lower_than_open),
             'total_return_explosive_short': round(total_return_explosive_short, rounding_precision),
-            'avg_return_short': round(total_return_short_using_low / len(total_low_trades_above_threshold), rounding_precision),
-            'avg_return_long': round(total_return_long_using_high / len(total_high_trades_above_threshold), rounding_precision),
-            'avg_return_explosive_long': round(total_return_explosive_long / len(prediction_low_higher_than_open), rounding_precision),
-            'avg_return_explosive_short': round(total_return_explosive_short / len(prediction_high_lower_than_open), rounding_precision)
+            'avg_return_short': round(total_return_short_using_low / len(total_low_trades_above_threshold),
+                                      rounding_precision),
+            'avg_return_long': round(total_return_long_using_high / len(total_high_trades_above_threshold),
+                                     rounding_precision),
+            'avg_return_explosive_long': round(total_return_explosive_long / len(prediction_low_higher_than_open),
+                                               rounding_precision),
+            'avg_return_explosive_short': round(total_return_explosive_short / len(prediction_high_lower_than_open),
+                                                rounding_precision)
         }
 
         # Return the results dictionary along with the other return values

@@ -6,16 +6,15 @@ import pandas as pd
 
 
 class ResultAnalyzer:
-    def __init__(self, high_data, low_data, start_location_for_plotting, end_location_for_plotting, config: Config,
-                 stock_file_name):
+    def __init__(self, high_data, low_data, start_location_for_plotting, end_location_for_plotting, config: Config):
         print("Starting Result Analyzer")
 
         util = Util(config)
 
         # start_location_for_plotting = 100
         # end_location_for_plotting = 200
-
-        stock = util.load_file(stock_file_name, config.data_folder)
+        #TODO: Change this code so it iterates over all the symbols rather than only checking the first file
+        stock = util.load_file(config.file_list[0], config.data_folder)
         stock.index = pd.to_datetime(stock.index, utc=True)
 
         # could use either high or low data to get the start location
@@ -45,4 +44,4 @@ class ResultAnalyzer:
 
         predict_df.to_csv(f"{config.result_folder}/Predictions {config.file_name_format}.csv")
         print(f"result_dic: {result_dic}")
-        pd.DataFrame(result_dic, index=[0]).to_csv(f"{config.result_folder}/Results {config.file_name_format}.csv")
+        pd.DataFrame(result_dic, index=[0]).to_csv(f"{config.result_folder}/Summary of Trades {config.file_name_format}.csv")

@@ -31,6 +31,7 @@ class Plotter:
         file_name = "Train and Test y Distribution.png"
         plt.savefig(result_folder / file_name)
         plt.show()
+        plt.close()
 
     def plot_train_validation_loss(self):
         # Plot the training and validation loss
@@ -81,6 +82,7 @@ class Plotter:
         if self.save_results:
             plt.savefig(self.result_folder / file_name)
         plt.show()
+        plt.close()
         # if self.display_plots:
         # else:
         #     plt.close()
@@ -101,6 +103,7 @@ class Plotter:
         if self.save_results:
             plt.savefig(self.result_folder / file_name)
         plt.show()
+        plt.close()
         # if self.display_plots:
         # else:
         #     plt.close()
@@ -119,6 +122,7 @@ class Plotter:
             plt.savefig(
                 Path(self.result_folder / file_name))
         plt.show()
+        plt.close()
         # if self.display_plots:
         # else:
         #     plt.close()
@@ -154,6 +158,7 @@ class Plotter:
         plt.legend()
         file_name = "Cumulative Log Return " + self.plot_file_details + ".png"
         plt.savefig(self.result_folder / file_name)
+        plt.close()
 
     @staticmethod
     def generate_plot_data(low_data, high_data, start_location_for_plotting, end_location_for_plotting, forecast_size):
@@ -215,7 +220,7 @@ class Plotter:
         plt.legend()
         file_name = result_folder / "Trade Results.png"
         plt.savefig(file_name)
-        plt.show()
+        plt.close()
 
     import matplotlib.pyplot as plt
     @staticmethod
@@ -244,4 +249,4 @@ class Plotter:
         plt.tight_layout()
         file_name = result_folder / "Explosive Moves.png"
         plt.savefig(file_name)
-        plt.show()
+        plt.close()
