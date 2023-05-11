@@ -163,10 +163,10 @@ if __name__ == "__main__":
         models.append(model)
 
     # test_file_list = ["FX_EURUSD.csv"]
-    # test_file_list = ["BATS_SPY.csv"]
-    test_file_list = ["BATS_TSLA.csv"]
+    test_file_list = ["BATS_SPY.csv"]
+    # test_file_list = ["BATS_TSLA.csv"]
     test_config = Config(file_list=test_file_list)
-    test_config.threshold = 0.04
+    test_config.threshold = 0.01
 
     test_cut_off_date = pd.to_datetime('2018-01-02 09:30:00-05:00')
     test_config.test_cut_off_date = test_cut_off_date
